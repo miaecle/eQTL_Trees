@@ -8,16 +8,10 @@ Created on Mon Apr 29 17:14:29 2019
 
 import pickle
 import numpy as np
-import pandas as pd
-import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-sns.set(style="whitegrid")
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
+import pandas as pd
 from xgboost import XGBClassifier
-
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
 from sklearn.preprocessing import normalize
 
@@ -25,6 +19,7 @@ from generate_X import feat_name
 from split import random_split, position_split, maf_split, chromosome_split
 from cross_validation import cv, cv_validate
 from copy import deepcopy
+sns.set(style="whitegrid")
 
 test_data = pickle.load(open('../Data/test_pairs.pkl', 'r'))
 test_X, test_y = pickle.load(open('../Data/test_pairs_Xy.pkl', 'r'))
@@ -45,48 +40,42 @@ p_models = models['PAIR']
 p_v_models = models['PAIR+VARIANT']
 p_g_models = models['PAIR+GENE']
 v_g_models = models['VARIANT+GENE']
-i = 0
 
 ####################################################
+i = 0
 model = full_models[i]
 valid_y_pred = model.predict_proba(X)
 full_pred = deepcopy(valid_y_pred)
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = v_models[i]
 valid_y_pred = model.predict_proba(X_v)
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = g_models[i]
 valid_y_pred = model.predict_proba(X_g)
 gene_pred = deepcopy(valid_y_pred)
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = p_models[i]
 valid_y_pred = model.predict_proba(X_p)
 pair_pred = deepcopy(valid_y_pred)
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = p_v_models[i]
 valid_y_pred = model.predict_proba(np.concatenate([X_v, X_p], axis=1))
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = p_g_models[i]
 valid_y_pred = model.predict_proba(np.concatenate([X_g, X_p], axis=1))
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
-
 model = v_g_models[i]
 valid_y_pred = model.predict_proba(np.concatenate([X_v, X_g], axis=1))
 print(np.mean(valid_y_pred[:, 1]))
 print(np.sum(valid_y_pred[:, 1] > 0.5001))
 
-####################################################
+# Prediction distribution for test samples
 data_name = 'assembled_balanced_dataset_123_Xy.pkl'
 d_name = 'assembled_balanced_dataset_123.pkl'
 with open('../Data/' + data_name, 'r') as f:
@@ -94,6 +83,7 @@ with open('../Data/' + data_name, 'r') as f:
 with open('../Data/' + d_name, 'r') as f:
   all_dat = pickle.load(f)
   all_dat = all_dat['pos'] + all_dat['neg']
+
 # Shuffle and normalize features
 inds = np.arange(all_X.shape[0])
 np.random.seed(123)
@@ -101,8 +91,8 @@ np.random.shuffle(inds)
 X = all_X[inds, :]
 y = all_y[inds]
 dat = [all_dat[i] for i in inds]
-
 cv_inds = random_split(X, y, dat, K=10)
+
 train_inds, valid_inds = cv_inds[0]
 train_y = y[train_inds]
 train_X = X[train_inds]
@@ -135,8 +125,7 @@ plt.xlabel('Predicted Prob.', fontdict={"size": 15})
 plt.tight_layout()
 plt.savefig('fig_distri.png', dpi=300)
 
-###################################################
-
+# Rank analysis for test samples
 model = full_models[0]
 
 test_dat = test_data['pos'] + test_data['neg']
@@ -147,8 +136,6 @@ vs_in_order = np.array([l[1] for l in test_data['pos']] + [l[1] for l in test_da
 
 pos_ct = 0
 neg_ct = 0
-
-np.random.seed(122)
 ranks = []
 lengths = []
 for v in vs:

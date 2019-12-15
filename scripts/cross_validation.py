@@ -10,7 +10,12 @@ import copy
 import numpy as np
 import pickle
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score, f1_score
+from sklearn.metrics import precision_recall_curve, auc
 from generate_X import feat_name
+
+def prc_auc_score(y, y_pred):
+  precision, recall, _ = precision_recall_curve(y, y_pred)
+  return auc(recall, precision)
 
 def cv(model_ins, X, y, cv_inds, name, feat_name=feat_name):
   
@@ -198,9 +203,10 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     full_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                         f1_score(valid_y, valid_y_prediction),
-                        precision_score(valid_y, valid_y_prediction),
-                        recall_score(valid_y, valid_y_prediction),
-                        accuracy_score(valid_y, valid_y_prediction)))
+                        prc_auc_score(valid_y, valid_y_pred[:, 1])))
+#                        precision_score(valid_y, valid_y_prediction),
+#                        recall_score(valid_y, valid_y_prediction),
+#                        accuracy_score(valid_y, valid_y_prediction)))
     print("FULL: " + str(full_scores[-1]))
     
     # VARIANT
@@ -209,9 +215,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     v_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                      f1_score(valid_y, valid_y_prediction),
-                     precision_score(valid_y, valid_y_prediction),
-                     recall_score(valid_y, valid_y_prediction),
-                     accuracy_score(valid_y, valid_y_prediction)))
+                     prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("VAR: " + str(v_scores[-1]))
     
     # GENE
@@ -220,9 +224,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     g_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                      f1_score(valid_y, valid_y_prediction),
-                     precision_score(valid_y, valid_y_prediction),
-                     recall_score(valid_y, valid_y_prediction),
-                     accuracy_score(valid_y, valid_y_prediction)))
+                     prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("GENE: " + str(g_scores[-1]))
     
     # PAIR
@@ -231,9 +233,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     p_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                      f1_score(valid_y, valid_y_prediction),
-                     precision_score(valid_y, valid_y_prediction),
-                     recall_score(valid_y, valid_y_prediction),
-                     accuracy_score(valid_y, valid_y_prediction)))
+                     prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("PAIR: " + str(p_scores[-1]))
     
     # DIST+VARIANT
@@ -242,9 +242,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     p_v_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                        f1_score(valid_y, valid_y_prediction),
-                       precision_score(valid_y, valid_y_prediction),
-                       recall_score(valid_y, valid_y_prediction),
-                       accuracy_score(valid_y, valid_y_prediction)))
+                       prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("PAIR+VAR: " + str(p_v_scores[-1]))
     
     # DIST+GENE
@@ -253,9 +251,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     p_g_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                        f1_score(valid_y, valid_y_prediction),
-                       precision_score(valid_y, valid_y_prediction),
-                       recall_score(valid_y, valid_y_prediction),
-                       accuracy_score(valid_y, valid_y_prediction)))
+                       prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("PAIR+GENE: " + str(p_g_scores[-1]))
 
     # VAR+GENE
@@ -264,9 +260,7 @@ def cv_validate(model_ins, X, y, cv_inds, name):
     valid_y_prediction = np.argmax(valid_y_pred, axis=1)
     v_g_scores.append((roc_auc_score(valid_y, valid_y_pred[:, 1]),
                        f1_score(valid_y, valid_y_prediction),
-                       precision_score(valid_y, valid_y_prediction),
-                       recall_score(valid_y, valid_y_prediction),
-                       accuracy_score(valid_y, valid_y_prediction)))
+                       prc_auc_score(valid_y, valid_y_pred[:, 1])))
     print("VAR+GENE: " + str(v_g_scores[-1]))
 
   return full_scores, v_scores, g_scores, p_scores, p_v_scores, p_g_scores, v_g_scores

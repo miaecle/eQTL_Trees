@@ -348,6 +348,7 @@ feat_name = [p[0]+'_v' for p in var_CADD_keys + var_GWAVA_keys + var_DeepSEA_key
     [p[0]+'_g' for p in gene_CADD_keys + gene_GWAVA_keys] + ['dist_p'] + \
     [p[0]+'_p' for p in pair_HiCs_keys + pair_GWAVA_keys]
 
+
 def normalize(X, feat_name=feat_name):
   new_feat_name = []
   new_X = []
@@ -407,8 +408,9 @@ def normalize(X, feat_name=feat_name):
     new_feat_name.append(name)
   new_X = np.concatenate(new_X, 1)
   return new_X, new_feat_name
-
-
+      
+      
+  
 if __name__ == '__main__':
   parser = argparse.ArgumentParser(
       description='eQTL_sampler')
@@ -501,7 +503,8 @@ if __name__ == '__main__':
   
   X = [np.concatenate([v_f, g_f, p_f]) for v_f, g_f, p_f in zip(variant_feats, gene_feats, pair_feats)]
   X = np.stack(X).astype(float)
-  y = np.array([1] * len(in_pairs['pos']) + [0] * len(in_pairs['neg']))
+  y = np.array([p[6] <= 1e-5 for p in in_pairs['pos'] + in_pairs['neg']]) * 1
+  
   
   with open(outfile, 'w') as f:
     pickle.dump((X, y), f)

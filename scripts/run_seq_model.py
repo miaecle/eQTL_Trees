@@ -57,7 +57,7 @@ elif split == 'maf':
 elif split == 'chromosome':
   cv_inds = chromosome_split(X, y, dat)
 
-  
+
 # Preprocessing
 static_feat_inds = [i for i in range(len(feat_name)) \
                  if feat_name[i].endswith('_v') or \

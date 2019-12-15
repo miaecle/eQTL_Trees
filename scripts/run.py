@@ -30,7 +30,6 @@ normalized = False
 #model_ins = LogisticRegression()
 model_ins = XGBClassifier(n_estimators=900, max_depth=5)
 split = 'random'
-model_name = split + '_' + os.path.splitext(data_name)[0] + 'xgb'
 #==============================================================
 
 with open('../Data/' + data_name, 'r') as f:
@@ -58,4 +57,6 @@ elif split == 'maf':
 elif split == 'chromosome':
   cv_inds = chromosome_split(X, y, dat)
 
-SCORES = cv(model_ins, X, y, cv_inds, model_name, feat_name=feat_name)
+model_name = split + '_' + os.path.splitext(data_name)[0]
+#SCORES = cv(model_ins, X, y, cv_inds, model_name, feat_name=feat_name)
+SCORES = cv_validate(model_ins, X, y, cv_inds, model_name)
