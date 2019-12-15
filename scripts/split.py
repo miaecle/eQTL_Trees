@@ -49,7 +49,7 @@ def position_split(X, y, dat, K=10):
     cv_inds.append((train_inds.astype(int), valid_inds.astype(int)))
   return cv_inds
 
-def maf_split(X, y, dat, thrs=[0.01, 0.02, 0.03, 0.04, 0.05]):
+def maf_split(X, y, dat, thrs=[0.01]):
   cv_inds = []
   maf = np.array([float(d[5]) for d in dat])
   for thr in thrs:
