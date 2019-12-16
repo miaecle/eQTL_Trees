@@ -3,7 +3,7 @@ This repo contains the codes and data used for the work: Predicting target genes
 
 Note that all pickle files (dataset and saved models) need to be downloaded through git-lfs
 
-All raw data are downloaded from GTEx database and ORegAnno database. Curation process can be found in the methods section of the paper, related codes are stored under `scripts/support_scripts`. Generated data files include:
+All raw data are downloaded from [GTEx database](https://www.gtexportal.org/home/datasets) (GTEx V7, tissue-specific data) and [ORegAnno database](http://www.oreganno.org/dump/). Curation process can be found in the methods section of the paper, related codes are stored under `scripts/support_scripts`. Generated data files include:
 * `Data/assembled_balanced_dataset_123.pkl` - main dataset for the cross-validation study, each entry represents a variant-gene pair, in the same form as GTEx entry: [gene_id, variant_id, tss_distance, ma_samples, ma_count, maf, pval_nominal, slope, slope_se]
 * `Data/assembled_balanced_dataset_123_Xy.pkl` - features and labels for the main dataset, each entry corresponds to a row in the feature 2d-array, names and descriptions of the features can be found in the supplementary spreadsheet and `scripts/generate_X.py`
 * `Data/test_pairs.pkl` - test dataset collected from ORegAnno, same format as main dataset
